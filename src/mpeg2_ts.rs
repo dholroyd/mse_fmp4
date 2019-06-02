@@ -50,7 +50,8 @@ fn make_initialization_segment(
     track.tkhd_box.width = (avc_stream.width as u32) << 16;
     track.tkhd_box.height = (avc_stream.height as u32) << 16;
     track.tkhd_box.duration = video_duration;
-    track.edts_box.elst_box.media_time = avc_stream.start_time();
+    // the edit list data which was being included seemed to cause problems for HLS.js (chrome://media-internals reported huge, nagative PTS values)
+    //track.edts_box.elst_box.media_time = avc_stream.start_time();
     track.mdia_box.mdhd_box.timescale = Timestamp::RESOLUTION as u32;
     track.mdia_box.mdhd_box.duration = video_duration;
 
