@@ -10,12 +10,14 @@ use {ErrorKind, Result};
 #[allow(missing_docs)]
 #[derive(Debug, Default)]
 pub struct MediaSegment {
+    pub styp_box: SegmentTypeBox,
     pub moof_box: MovieFragmentBox,
     pub mdat_boxes: Vec<MediaDataBox>,
 }
 impl WriteTo for MediaSegment {
     fn write_to<W: Write>(&self, mut writer: W) -> Result<()> {
         track_assert!(!self.mdat_boxes.is_empty(), ErrorKind::InvalidInput);
+        write_box!(writer, self.styp_box);
         write_box!(writer, self.moof_box);
         write_boxes!(writer, &self.mdat_boxes);
         Ok(())
@@ -37,6 +39,41 @@ impl Mp4Box for MediaDataBox {
     fn write_box_payload<W: Write>(&self, mut writer: W) -> Result<()> {
         write_all!(writer, &self.data);
         Ok(())
+    }
+}
+
+#[derive(Debug)]
+pub struct SegmentTypeBox {
+    major_brand: [u8; 4],
+    minor_version: u32,
+    compatible_brands: Vec<[u8; 4]>,
+}
+impl Mp4Box for SegmentTypeBox {
+    const BOX_TYPE: [u8; 4] = *b"styp";
+
+    fn box_payload_size(&self) -> Result<u32> {
+        Ok(4 + 4 + self.compatible_brands.len() as u32 * 4)
+    }
+    fn write_box_payload<W: Write>(&self, mut writer: W) -> Result<()> {
+        write_all!(writer, &self.major_brand[..]);
+        write_u32!(writer, self.minor_version);
+        for brand in self.compatible_brands.iter() {
+            write_all!(writer, &brand[..]);
+        }
+        Ok(())
+    }
+}
+impl Default for SegmentTypeBox {
+    fn default() -> Self {
+        SegmentTypeBox {
+            major_brand: *b"iso6",
+            minor_version: 0,
+            compatible_brands: vec![
+                *b"iso6",
+                *b"cmfc",
+                *b"msdh",
+            ]
+        }
     }
 }
 
