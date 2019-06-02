@@ -38,11 +38,11 @@ fn make_initialization_segment(
     if video_duration < audio_duration {
         segment.moov_box.mvhd_box.timescale = aac::SAMPLES_IN_FRAME as u32;
         segment.moov_box.mvhd_box.duration = audio_duration;
-        segment.moov_box.mvex_box.mehd_box.fragment_duration = audio_duration;
+        //segment.moov_box.mvex_box.mehd_box.fragment_duration = audio_duration;
     } else {
         segment.moov_box.mvhd_box.timescale = Timestamp::RESOLUTION as u32;
         segment.moov_box.mvhd_box.duration = video_duration;
-        segment.moov_box.mvex_box.mehd_box.fragment_duration = video_duration;
+        //segment.moov_box.mvex_box.mehd_box.fragment_duration = video_duration;
     }
 
     // video track

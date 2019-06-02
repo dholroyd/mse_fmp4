@@ -82,7 +82,7 @@ impl Mp4Box for MovieBox {
 #[allow(missing_docs)]
 #[derive(Debug, Default)]
 pub struct MovieExtendsBox {
-    pub mehd_box: MovieExtendsHeaderBox,
+    //pub mehd_box: MovieExtendsHeaderBox,
     pub trex_boxes: Vec<TrackExtendsBox>,
 }
 impl Mp4Box for MovieExtendsBox {
@@ -90,13 +90,13 @@ impl Mp4Box for MovieExtendsBox {
 
     fn box_payload_size(&self) -> Result<u32> {
         let mut size = 0;
-        size += box_size!(self.mehd_box);
+        //size += box_size!(self.mehd_box);
         size += boxes_size!(self.trex_boxes);
         Ok(size)
     }
     fn write_box_payload<W: Write>(&self, mut writer: W) -> Result<()> {
         track_assert!(!self.trex_boxes.is_empty(), ErrorKind::InvalidInput);
-        write_box!(writer, self.mehd_box);
+        //write_box!(writer, self.mehd_box);
         write_boxes!(writer, &self.trex_boxes);
         Ok(())
     }
