@@ -613,6 +613,7 @@ pub struct SampleTableBox {
     pub stsc_box: SampleToChunkBox,
     pub stsz_box: SampleSizeBox,
     pub stco_box: ChunkOffsetBox,
+    pub stss_box: SyncSampleBox,
 }
 impl Mp4Box for SampleTableBox {
     const BOX_TYPE: [u8; 4] = *b"stbl";
@@ -624,6 +625,7 @@ impl Mp4Box for SampleTableBox {
         size += box_size!(self.stsc_box);
         size += box_size!(self.stsz_box);
         size += box_size!(self.stco_box);
+        size += box_size!(self.stss_box);
         Ok(size)
     }
     fn write_box_payload<W: Write>(&self, mut writer: W) -> Result<()> {
@@ -632,6 +634,7 @@ impl Mp4Box for SampleTableBox {
         write_box!(writer, self.stsc_box);
         write_box!(writer, self.stsz_box);
         write_box!(writer, self.stco_box);
+        write_box!(writer, self.stss_box);
         Ok(())
     }
 }
@@ -721,6 +724,23 @@ impl Mp4Box for ChunkOffsetBox {
 pub struct SampleToChunkBox;
 impl Mp4Box for SampleToChunkBox {
     const BOX_TYPE: [u8; 4] = *b"stsc";
+
+    fn box_version(&self) -> Option<u8> {
+        Some(0)
+    }
+    fn box_payload_size(&self) -> Result<u32> {
+        Ok(4)
+    }
+    fn write_box_payload<W: Write>(&self, mut writer: W) -> Result<()> {
+        write_u32!(writer, 0);
+        Ok(())
+    }
+}
+
+#[derive(Debug, Default)]
+pub struct SyncSampleBox;
+impl Mp4Box for SyncSampleBox {
+    const BOX_TYPE: [u8; 4] = *b"stss";
 
     fn box_version(&self) -> Option<u8> {
         Some(0)
