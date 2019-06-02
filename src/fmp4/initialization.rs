@@ -39,11 +39,14 @@ impl Mp4Box for FileTypeBox {
     const BOX_TYPE: [u8; 4] = *b"ftyp";
 
     fn box_payload_size(&self) -> Result<u32> {
-        Ok(8)
+        Ok(20)
     }
     fn write_box_payload<W: Write>(&self, mut writer: W) -> Result<()> {
-        write_all!(writer, b"isom"); // major_brand
-        write_u32!(writer, 512); // minor_version
+        write_all!(writer, b"iso6"); // major_brand
+        write_u32!(writer, 0); // minor_version
+        write_all!(writer, b"iso6"); // compatible brands
+        write_all!(writer, b"cmfc"); // compatible brands
+        write_all!(writer, b"dash"); // compatible brands
         Ok(())
     }
 }
