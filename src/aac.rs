@@ -4,7 +4,7 @@ use std::io::Read;
 
 use {ErrorKind, Result};
 
-pub(crate) const SAMPLES_IN_FRAME: usize = 1024;
+pub const SAMPLES_IN_FRAME: usize = 1024;
 
 #[derive(Debug, Clone)]
 pub(crate) struct AdtsHeader {
@@ -141,7 +141,7 @@ impl SamplingFrequency {
         *self as u8
     }
 
-    fn from_index(n: u8) -> Result<Self> {
+    pub fn from_index(n: u8) -> Result<Self> {
         Ok(match n {
             0 => SamplingFrequency::Hz96000,
             1 => SamplingFrequency::Hz88200,
@@ -192,7 +192,7 @@ pub enum ChannelConfiguration {
     EightChannels = 7,
 }
 impl ChannelConfiguration {
-    fn from_u8(n: u8) -> Result<Self> {
+    pub fn from_u8(n: u8) -> Result<Self> {
         Ok(match n {
             0 => ChannelConfiguration::SentViaInbandPce,
             1 => ChannelConfiguration::OneChannel,

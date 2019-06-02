@@ -13,9 +13,9 @@ pub use self::media::{MediaDataBox, MediaSegment, MovieFragmentBox, MovieFragmen
                       Sample, SampleFlags, TrackFragmentBaseMediaDecodeTimeBox, TrackFragmentBox,
                       TrackFragmentHeaderBox, TrackRunBox};
 
-const VIDEO_TRACK_ID: u32 = 1;
-const AUDIO_TRACK_ID: u32 = 2;
+pub const VIDEO_TRACK_ID: u32 = 1;
+pub const AUDIO_TRACK_ID: u32 = 2;
 
-mod common;
+pub mod common;
 mod initialization;
 mod media;
